@@ -62,8 +62,69 @@
 
 ### 微服务/分布式
 
+### 版本控制工具
 
+#### Git
+实际开发中的 Git 命令大全
 
+##### 创建仓库/初始化/提交操作
+- git init
+    - 初始化仓库操作，这样才能用git进行代码管理。
+- git clone 仓库地址
+    - 复制远程仓库的代码到本地。
+- git add XXX
+    - 添加本地的某个新文件到本地仓库，但是，此时只是提交到了本地仓库，并没有提交到远程仓库。
+- git add .
+    - 这个操作和上面的区别在于，这个命令会添加所有的新文件，也就是当前目录下的。
+- git commit -m 'message'
+    - 提交代码到本地仓库，并没有到远程仓库。
+- git commit -am 'message'
+    - 这个命令将上面两个步骤 add 和 commit 合二为一。
+
+##### 日志查看/信息显示
+- git log
+    - 这个命令主要用于查看提交日志
+- git status
+    - 可以用来查看仓库的状态
+
+##### 分支管理
+- git branch XXX 
+    - 可以在远程界面创建分支，或者使用命令 git branch XXX
+    
+    创建的新分支的代码一般是来自于 master 的，所以，比如你创建了新分支 test，那么 test 分支的代码是和 master 的代码是一样的。
+- git checkout XXX
+    - 切换到 XXX 分支，然后我们再到XXX分支进行功能的开发工作。
+- git checkout -b XXX
+    - 创建并且直接切换到 XXX 分支
+    
+    当需要进行新的功能开发的时候，可以直接创建新分支，然后直接切换
+- git branch
+    - 直接查看本地的所有分支，并且当前处于哪个分支。
+- git branch -a
+    - 查看本地和远程所有分支
+- git merge
+    - 需要合并到 master 的时候，合并分支的步骤：
+        - 切换到 master 分支，git checkout master
+        - 合并 XXX 分支，git merge XXX
+        - 这时候如果有冲突就需要解决冲突了。
+- git branch -D XXX
+    - 删除本地分支
+- git push origin –delete XXX
+    - 删除远程分支(删除远程分支属于危险操作，如果权限不合理，可能会出现大问题。)
+
+##### 更新管理
+- git push origin XXX(远程仓库名称)
+    - 提交代码到远程
+-  git pull origin XXX
+    - 拉取远程代码到本地
+
+##### 版本回退
+- git reset –hard XXX
+    - 把当前分支的代码全部回退到以前的一个版本，不可逆转，需要谨慎使用。
+    - git reset --hard 766f905f
+- git reflog
+    - 查看所有的 head 的记录。
+    
 ## 微信公众号学习集锦
 
 ###目录
