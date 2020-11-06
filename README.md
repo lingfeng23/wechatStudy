@@ -51,6 +51,45 @@
     - 在 where 子句中对字段进行函数操作
 - Update 语句，如果只更改1、2个字段，不要Update全部字段，否则频繁调用会引起明显的性能消耗，同时带来大量日志。
 
+##### MyISAM 和 InnoDB 的区别
+MyISAM 是 MySQL 的默认数据库引擎（5.5版之前）。虽然性能极佳，而且提供了大量的特性，包括全文索引、压缩、空间函数等，但 MyISAM 不支持事务和行级
+锁，而且最大的缺陷就是崩溃后无法安全恢复。不过，5.5版本之后，MySQL 引入了 InnoDB（事务性数据库引擎），MySQL 5.5版本后默认的存储引擎为 InnoDB。
+
+大多数时候我们使用的都是 InnoDB 存储引擎，但是在某些情况下使用 MyISAM 也是合适的比如读密集的情况下。（如果你不介意 MyISAM 崩溃恢复问题的话）。
+
+两者的对比：
+- 是否支持行级锁：MyISAM 只有表级锁(table-level locking)，而 InnoDB 支持行级锁(row-level locking)和表级锁,默认为行级锁。
+- 是否支持事务和崩溃后的安全恢复：MyISAM 强调的是性能，每次查询具有原子性,其执行速度比 InnoDB 类型更快，但是不提供事务支持。但是 InnoDB 提供事
+务支持事务，外部键等高级数据库功能。 具有事务(commit)、回滚(rollback)和崩溃修复能力(crash recovery capabilities)的
+事务安全(transaction-safe (ACID compliant))型表。
+- 是否支持外键：MyISAM 不支持，而 InnoDB 支持。
+- 是否支持 MVCC：仅 InnoDB 支持。应对高并发事务, MVCC 比单纯的加锁更高效;MVCC只在 READ COMMITTED 和 REPEATABLE READ 两个隔离级别下工作;
+MVCC 可以使用乐观(optimistic)锁和悲观(pessimistic)锁来实现;各数据库中 MVCC 实现并不统一。
+- ......
+
+#### 对 Mysql 中索引的理解
+MySQL 索引使用的数据结构主要有 BTree 索引和哈希索引。对于哈希索引来说，底层的数据结构就是哈希表，因此在绝大多数需求为单条记录查询的时候，可以选择
+哈希索引，查询性能最快；其余大部分场景，建议选择 BTree 索引。
+
+MySQL 的 BTree 索引使用的是B树中的 B+Tree，但对于主要的两种存储引擎的实现方式是不同的。
+- MyISAM: B+Tree 叶节点的 data 域存放的是数据记录的地址。在索引检索的时候，首先按照 B+Tree 搜索算法搜索索引，如果指定的 Key 存在，则取出其
+data 域的值，然后以 data 域的值为地址读取相应的数据记录。这被称为“非聚簇索引”。
+- InnoDB: 其数据文件本身就是索引文件。相比 MyISAM，索引文件和数据文件是分离的，其表数据文件本身就是按 B+Tree 组织的一个索引结构，树的叶节点
+data 域保存了完整的数据记录。这个索引的 key 是数据表的主键，因此 InnoDB 表数据文件本身就是主索引。这被称为“聚簇索引（或聚集索引）”。而其余的索引
+都作为辅助索引，辅助索引的 data 域存储相应记录主键的值而不是地址，这也是和 MyISAM 不同的地方。在根据主索引搜索时，直接找到 key 所在的节点即可取
+出数据；在根据辅助索引查找时，则需要先取出主键的值，再走一遍主索引。 因此，在设计表的时候，不建议使用过长的字段作为主键，也不建议使用非单调的字段作
+为主键，这样会造成主索引频繁分裂。
+
+##### 如何理解事务的四大特性？
+- 原子性（Atomicity）：事务是最小的执行单位，不允许分割。事务的原子性确保动作要么全部完成，要么完全不起作用；
+- 一致性（Consistency）：执行事务前后，数据保持一致，多个事务对同一个数据读取的结果是相同的；
+- 隔离性（Isolation）：并发访问数据库时，一个用户的事务不被其他事务所干扰，各并发事务之间数据库是独立的；
+- 持久性（Durability）：一个事务被提交之后。它对数据库中数据的改变是持久的，即使数据库发生故障也不应该对其有任何影响。 
+
+##### 如何对大表进行优化？(TODO)
+
+
+ 
 #### Redis
 
 ##### 为什么要用 redis/为什么要用缓存？
@@ -68,18 +107,18 @@
     memcached 服务的高可用，整个程序架构上较为复杂。    
 
 ##### redis 常见数据结构以及使用场景分析
-- String(常用命令: set,get,decr,incr,mget 等。)
+- String(常用命令: set, get, decr, incr, mget 等。)
     - String数据结构是简单的key-value类型，value其实不仅可以是String，也可以是数字。 常规key-value缓存应用； 常规计数：微博数，粉丝数等。
-- Hash(常用命令： hget,hset,hgetall 等。)
+- Hash(常用命令：hget, hset, hgetall 等。)
     - hash 是一个 string 类型的 field 和 value 的映射表，hash 特别适合用于存储对象，后续操作的时候，你可以直接仅仅修改这个对象中的某个字段的
     值。比如我们可以 hash 数据结构来存储用户信息，商品信息等等。
-- List(常用命令: lpush,rpush,lpop,rpop,lrange等)
+- List(常用命令: lpush, rpush, lpop, rpop, lrange 等)
     - list 就是链表，Redis list 的应用场景非常多，也是Redis最重要的数据结构之一，比如微博的关注列表，粉丝列表，消息列表等功能都可以用Redis的
     list 结构来实现。
     - Redis list 的实现为一个双向链表，即可以支持反向查找和遍历，更方便操作，不过带来了部分额外的内存开销。
     - 另外可以通过 lrange 命令，就是从某个元素开始读取多少个元素，可以基于 list 实现分页查询，这个很棒的一个功能，基于 redis 实现简单的高性能
     分页，可以做类似微博那种下拉不断分页的东西（一页一页的往下走），性能高。
-- Set(常用命令： sadd,spop,smembers,sunion 等)
+- Set(常用命令：sadd, spop, smembers, sunion 等)
     - set 对外提供的功能与 list 类似是一个列表的功能，特殊之处在于 set 是可以自动排重的。
     - 当你需要存储一个列表数据，又不希望出现重复数据时，set 是一个很好的选择，并且 set 提供了判断某个成员是否在一个 set 集合内的重要接口，这个也
     是 list 所不能提供的。可以基于 set 轻易实现交集、并集、差集的操作。
@@ -102,18 +141,22 @@
 ### 基础框架
 
 #### Mybatis
-- `#{}和${}的区别是什么？`
-    - ${}是 Properties 文件中的变量占位符，它可以用于标签属性值和 sql 内部，属于静态文本替换，比如${driver}会被静态替换为com.mysql.jdbc.Driver。
-    - `#{}是 sql 的参数占位符，Mybatis 会将 sql 中的#{}替换为?号，在 sql 执行前会使用 PreparedStatement 的参数设置方法，按序给 sql 的?号占位符设置参数值，比如 ps.setInt(0, parameterValue)，#{item.name} 的取值方式为使用反射从参数对象中获取 item 对象的 name 属性值，相当于 param.getItem().getName()`
-- 最佳实践中，通常一个 Xml 映射文件，都会写一个 Dao 接口与之对应，请问，这个 Dao 接口的工作原理是什么？Dao 接口里的方法，参数不同时，方法能重载吗？
-    - Dao 接口，就是人们常说的 Mapper 接口，接口的全限名，就是映射文件中的 namespace 的值，接口的方法名，就是映射文件中 MappedStatement 的
-    id 值，接口方法内的参数，就是传递给 sql 的参数。Mapper 接口是没有实现类的，当调用接口方法时，接口全限名+方法名拼接字符串作为 key 值，可唯一
-    定位一个 MappedStatement，举例：com.malf.mappers.StudentDao.findStudentById，可以唯一找到 namespace 为 com.malf.mappers.StudentDao
-    下面 id = findStudentById 的 MappedStatement。在 Mybatis 中，每一个<select>、<insert>、<update>、<delete>标签，都会被解析为一
-    个 MappedStatement 对象。
-    - Dao 接口里的方法，是不能重载的，因为是全限名+方法名的保存和寻找策略。
-    - Dao 接口的工作原理是 JDK 动态代理，Mybatis 运行时会使用 JDK 动态代理为 Dao 接口生成代理 proxy 对象，代理对象 proxy 会拦截接口方法，
-    转而执行 MappedStatement 所代表的 sql，然后将 sql 执行结果返回。
+
+##### `#{}和${}的区别是什么？`
+- ${}是 Properties 文件中的变量占位符，它可以用于标签属性值和 sql 内部，属于静态文本替换，比如${driver}会被静态替换为 com.mysql.jdbc.Driver。
+- `#{}是 sql 的参数占位符，Mybatis 会将 sql 中的#{}替换为?号，在 sql 执行前会使用 PreparedStatement 的参数设置方法，按序给 sql 的?号占
+位符设置参数值，比如 ps.setInt(0, parameterValue)，#{item.name} 的取值方式为使用反射从参数对象中获取 item 对象的 name 属性值，相当于
+param.getItem().getName()`
+
+##### 通常一个 Xml 映射文件都会写一个 Dao 接口与之对应，请问 Dao 接口的工作原理是什么？Dao 接口里的方法，参数不同时，方法能重载吗？
+- Dao 接口，就是人们常说的 Mapper 接口，接口的全限名，就是映射文件中的 namespace 的值，接口的方法名，就是映射文件中 MappedStatement 的
+id 值，接口方法内的参数，就是传递给 sql 的参数。Mapper 接口是没有实现类的，当调用接口方法时，接口全限名+方法名拼接字符串作为 key 值，可唯一
+定位一个 MappedStatement，举例：com.malf.mappers.StudentDao.findStudentById，可以唯一找到 namespace 为 com.malf.mappers.StudentDao
+下面 id = findStudentById 的 MappedStatement。在 Mybatis 中，每一个<select>、<insert>、<update>、<delete>标签，都会被解析为一
+个 MappedStatement 对象。
+- Dao 接口里的方法，是不能重载的，因为是全限名+方法名的保存和寻找策略。
+- Dao 接口的工作原理是 JDK 动态代理，Mybatis 运行时会使用 JDK 动态代理为 Dao 接口生成代理 proxy 对象，代理对象 proxy 会拦截接口方法，
+转而执行 MappedStatement 所代表的 sql，然后将 sql 执行结果返回。
 
 #### Spring 
 
@@ -128,6 +171,29 @@
     - 集成 ：远程处理，JMS，JCA，JMX，电子邮件，任务，调度，缓存。
     - 语言 ：Kotlin，Groovy，动态语言。
     
+##### 对于 Spring IoC 和 AOP 的理解
+- IOC
+    - IoC（Inverse of Control:控制反转）是一种设计思想，就是将原本在程序中手动创建对象的控制权，交由 Spring 框架来管理。 IoC 容器是 Spring 用
+    来实现 IoC 的载体， IoC 容器实际上就是个Map(key，value), Map 中存放的是各种对象。
+    - 将对象之间的相互依赖关系交给 IoC 容器来管理，并由 IoC 容器完成对象的注入。这样可以很大程度上简化应用的开发，把应用从复杂的依赖关系中解放出来。 
+    IoC 容器就像是一个工厂一样，当我们需要创建一个对象的时候，只需要配置好配置文件/注解即可，完全不用考虑对象是如何被创建出来的。 
+    - Spring 时代我们一般通过 XML 文件来配置 Bean，后来开发人员觉得 XML 文件来配置不太好，于是 SpringBoot 注解配置就慢慢开始流行起来。
+- AOP 
+    - AOP(Aspect-Oriented Programming:面向切面编程)能够将那些与业务无关，却为业务模块所共同调用的逻辑或责任(例如事务处理、日志管理、权限
+    控制等)封装起来，便于减少系统的重复代码，降低模块间的耦合度，并有利于未来的可拓展性和可维护性。
+    - Spring AOP 就是基于动态代理的，如果要代理的对象，实现了某个接口，那么 Spring AOP 会使用 JDK Proxy，去创建代理对象，而对于没有实现接口
+    的对象，就无法使用 JDK Proxy 去进行代理了，这时候 Spring AOP 会使用 Cglib ，这时候 Spring AOP 会使用 Cglib 生成一个被代理对象的子类
+    来作为代理。
+
+##### Spring 中的 bean 的作用域有哪些？
+- singleton: 唯一 bean 实例，Spring 中的 bean 默认都是单例的。
+- prototype: 每次请求都会创建一个新的 bean 实例。
+- request: 每一次 HTTP 请求都会产生一个新的 bean，该 bean 仅在当前 HTTP request 内有效。
+- session: 每一次 HTTP 请求都会产生一个新的 bean，该 bean 仅在当前 HTTP session 内有效。
+- global-session: 全局 session 作用域，仅仅在基于 portlet 的 web 应用中才有意义，Spring5已经没有了。Portlet 是能够生成语义代
+码(例如：HTML)片段的小型 Java Web 插件。它们基于 portlet 容器，可以像 servlet 一样处理 HTTP 请求。但是，与 servlet 不同，每个 portlet
+都有不同的会话。
+
 ##### Spring 框架中用到了哪些设计模式？
 - 工厂设计模式: Spring 使用工厂模式通过 BeanFactory、ApplicationContext 创建 bean 对象。
 - 代理设计模式: Spring AOP 功能的实现。
@@ -138,7 +204,45 @@
 - 适配器模式: Spring AOP 的增强或通知(Advice)使用到了适配器模式、spring MVC 中也是用到了适配器模式适配 Controller。
 - ……
 
+##### @RestController 和 @Controller 的区别
+- Controller 返回一个页面
+    - 单独使用 @Controller 不加 @ResponseBody 的话一般使用在要返回一个视图的情况，这种情况属于比较传统的Spring MVC 的应用，对应于前后端不
+    分离的情况。
+- @RestController 返回 JSON 或 XML 形式数据
+    - @RestController 只返回对象，对象数据直接以 JSON 或 XML 形式写入 HTTP 响应(Response)中，这种情况属于 RESTful Web服务，这也是目前
+    日常开发所接触的最常用的情况（前后端分离）。
+- @Controller + @ResponseBody 返回 JSON 或 XML 形式数据
+    - 在 Spring4 之前开发 RESTful Web 服务的话，你需要使用 @Controller 并结合 @ResponseBody注解，也就是说 
+    @Controller + @ResponseBody = @RestController(Spring 4 之后新加的注解)
+    - @ResponseBody 注解的作用是将 Controller 的方法返回的对象通过适当的转换器转换为指定的格式之后，写入到HTTP 响应(Response)对象的 body
+     中，通常用来返回 JSON 或者 XML 数据，返回 JSON 数据的情况比较多。
 
+##### @Component 和 @Bean 的区别是什么？
+- 作用对象不同: @Component 注解作用于类，而 @Bean 注解作用于方法。
+- @Component 通常是通过类路径扫描来自动侦测以及自动装配到 Spring 容器中（我们可以使用 @ComponentScan 注解定义要扫描的路径从中找出标识了需要
+装配的类自动装配到 Spring 的 bean 容器中）。@Bean 注解通常是我们在标有该注解的方法中定义产生这个 bean, @Bean 告诉了 Spring 这是某个类的实例，
+当我需要用它的时候还给我。
+- @Bean 注解比 Component 注解的自定义性更强，而且很多地方我们只能通过 @Bean 注解来注册 bean。比如当我们引用第三方库中的类需要装配到 Spring
+容器时，则只能通过 @Bean 来实现(如下)。
+    ```
+    @Bean
+    public OneService getService(status) {
+        case (status)  {
+            when 1:
+                return new serviceImpl1();
+            when 2:
+                return new serviceImpl2();
+            when 3:
+                return new serviceImpl3();
+        }
+    }
+    ```
+##### 将一个类声明为 Spring 的 bean 的注解有哪些？
+我们一般使用 @Autowired 注解自动装配 bean，要想把类标识成可用于 @Autowired 注解自动装配的 bean 的类,采用以下注解可实现：
+- @Component: 通用的注解，可标注任意类为 Spring 组件。如果一个Bean不知道属于哪个层，可以使用 @Component 注解标注。
+- @Repository: 对应持久层即 Dao 层，主要用于数据库相关操作。
+- @Service: 对应服务层，主要涉及一些复杂的逻辑，需要用到 Dao 层。
+- @Controller: 对应 Spring MVC 控制层，主要用户接受用户请求并调用 Service 层返回数据给前端页面。
 
 
 ### 微服务/分布式
