@@ -316,7 +316,7 @@ param.getItem().getName()`
 - Dao 接口，就是人们常说的 Mapper 接口，接口的全限名，就是映射文件中的 namespace 的值，接口的方法名，就是映射文件中 MappedStatement 的
 id 值，接口方法内的参数，就是传递给 sql 的参数。Mapper 接口是没有实现类的，当调用接口方法时，接口全限名+方法名拼接字符串作为 key 值，可唯一
 定位一个 MappedStatement，举例：com.malf.mappers.StudentDao.findStudentById，可以唯一找到 namespace 为 com.malf.mappers.StudentDao
-下面 id = findStudentById 的 MappedStatement。在 Mybatis 中，每一个<select>、<insert>、<update>、<delete>标签，都会被解析为一
+下面 id = findStudentById 的 MappedStatement。在 Mybatis 中，每一个`<select>、<insert>、<update>、`<delete>`标签，都会被解析为一
 个 MappedStatement 对象。
 - Dao 接口里的方法，是不能重载的，因为是全限名+方法名的保存和寻找策略。
 - Dao 接口的工作原理是 JDK 动态代理，Mybatis 运行时会使用 JDK 动态代理为 Dao 接口生成代理 proxy 对象，代理对象 proxy 会拦截接口方法，
