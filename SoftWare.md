@@ -31,9 +31,13 @@
 ### Java 开发
 - JDK 1.8
 - Intellij IDEA
+- Tomcat
 - SourceTree
 - Git
 - PostMan
+- Grails
+- Gradle
+- 
 
 ### Python 开发
 - Python 3.x
