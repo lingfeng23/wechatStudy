@@ -504,7 +504,7 @@ a.getB()是 null 值，那么就会单独发送事先保存好的查询关联 B 
 ##### 有哪些类型的通知(Advice)？
 通知是个在方法执行前或执行后要做的动作，实际上是程序执行时要通过 Spring AOP 框架触发的代码段。
 - Before - 这些类型的 Advice 在 joinpoint 方法之前执行，并使用 @Before 注解标记进行配置。
-- After Returning - 这些类型的 Advice 在连接点方法正常执行后执行，并使用@AfterReturning 注解标记进行配置。
+- After Returning - 这些类型的 Advice 在连接点方法正常执行后执行，并使用 @AfterReturning 注解标记进行配置。
 - After Throwing - 这些类型的 Advice 仅在 joinpoint 方法通过抛出异常退出并使用 @AfterThrowing 注解标记配置时执行。
 - After (finally) - 这些类型的 Advice 在连接点方法之后执行，无论方法退出是正常还是异常返回，并使用 @After 注解标记进行配置。
 - Around - 这些类型的 Advice 在连接点之前和之后执行，并使用 @Around 注解标记进行配置。
@@ -579,6 +579,31 @@ a.getB()是 null 值，那么就会单独发送事先保存好的查询关联 B 
 
 #### Nginx
 
+##### 负载均衡的几种方式
+- 轮询（默认）
+- weight，代表权，权越高优先级越高
+```
+upstream myserver {
+    server  127.0.0.1:8111  weight=1;
+    server  127.0.0.1:8222  weight=2;
+}
+```
+- fair，按后端服务器的响应时间来分配请求，响应时间短的优先分配
+```
+upstream myserver {
+    server  127.0.0.1:8111;
+    server  127.0.0.1:8222;
+    fair;
+}
+```
+- ip_hash, 每个请求按照访问 ip 的 hash 结果分配，这样每一个访客固定的访问一个后端服务器，可以解决 session 的问题
+```
+upstream myserver {
+    ip_hash;
+    server  127.0.0.1:8111;
+    server  127.0.0.1:8222;
+}
+```
 ### 微服务/分布式
 
 ### 版本控制工具
