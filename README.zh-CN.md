@@ -2,13 +2,11 @@
 # 个人信息
 
  - 冷熊/男/1992 
- - 本科/兰州大学信息与计算科学 
+ - 本科/兰州大学/信息与计算科学 
  - 工作年限：3年
- - 技术博客：http://old.ftqq.com ( 使用GitHub Host的Big较高  )
  - Github：https://github.com/lingfeng23
-
- - 期望职位：PHP高级程序员，应用架构师
- - 期望薪资：税前月薪15k~20k，特别喜欢的公司可例外
+ - 期望职位：Java 工程师
+ - 期望薪资：月薪15k~17k
 
 
 # 联系方式
@@ -16,16 +14,27 @@
 - 手机：1131257162(微信同号)
 - Email：15131257162@163.com
 
-# 技能清单
+# 专业技能
 
-- Web开发：PHP/Hack/Node
+- Web开发：Java
 - Web框架：ThinkPHP/Yaf/Yii/Lavarel/LazyPHP
 - 前端框架：Bootstrap/AngularJS/EmberJS/HTML5/Cocos2dJS/ionic
 - 前端工具：Bower/Gulp/SaSS/LeSS/PhoneGap
-- 数据库相关：MySQL/PgSQL/PDO/SQLite
+- 数据库相关：MySQL/Redis/PDO/SQLite
 - 版本管理、文档和自动化部署工具：Svn/Git/PHPDoc/Phing/Composer
 - 单元测试：PHPUnit/SimpleTest/Qunit
 - 云和开放平台：SAE/BAE/AWS/微博开放平台/微信应用开发
+- Java 基础知识：掌握
+- JVM 虚拟机（Java内存区域、虚拟机垃圾算法、虚拟垃圾收集器、JVM内存管理）：掌握
+- 高并发、高可用、高性能系统开发：掌握
+- Spring、Hibernate、Ajax、Mybatis、JQuery ：掌握
+- SSH 整合、SSM 整合、 SOA 架构：掌握
+- Linux：掌握
+- MySQL常见优化手段：掌握
+- Spring Boot +Spring Cloud + Docker:了解
+- Hadoop 生态相关技术中的 HDFS、Storm、MapReduce、Hive、Hbase ：了解
+- Python 基础、一些常见第三方库比如OpenCV、wxpy、wordcloud、matplotlib：熟悉
+
 
 # 工作经历
 
@@ -67,19 +76,3 @@
 - 从这个项目中你学会了那些东西，使用到了那些技术，学会了那些新技术的使用
 - 另外项目描述中，最好可以体现自己的综合素质，比如你是如何协调项目组成员协同开发的或者在遇到某一个棘手的问题的时候你是如何解决的又或者说你在这个项
 目用了什么技术实现了什么功能比如：用redis做缓存提高访问速度和并发量、使用消息队列削峰和降流等等。
-
-# 专业技能
-- 计算机网络、数据结构、算法、操作系统等课内基础知识：掌握
-- Java 基础知识：掌握
-- JVM 虚拟机（Java内存区域、虚拟机垃圾算法、虚拟垃圾收集器、JVM内存管理）：掌握
-- 高并发、高可用、高性能系统开发：掌握
-- Struts2、Spring、Hibernate、Ajax、Mybatis、JQuery ：掌握
-- SSH 整合、SSM 整合、 SOA 架构：掌握
-- Dubbo： 掌握
-- Zookeeper: 掌握
-- 常见消息队列: 掌握
-- Linux：掌握
-- MySQL常见优化手段：掌握
-- Spring Boot +Spring Cloud +Docker:了解
-- Hadoop 生态相关技术中的 HDFS、Storm、MapReduce、Hive、Hbase ：了解
-- Python 基础、一些常见第三方库比如OpenCV、wxpy、wordcloud、matplotlib：熟悉
