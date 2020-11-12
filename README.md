@@ -71,7 +71,7 @@ JVM 中内置了三个重要的 ClassLoader，除了 BootstrapClassLoader 其他
 启动类加载器 BootstrapClassLoader 中。当父类加载器无法处理时，才由自己来处理。当父类加载器为null时，会使用启动类加载器 BootstrapClassLoader
 作为父类加载器。
 
-#####  Minor Gc和Full GC 有什么不同呢？
+#####  Minor Gc和Full GC 有什么不同？
 大多数情况下，对象在新生代中 eden 区分配。当 eden 区没有足够空间进行分配时，虚拟机将发起一次Minor GC。
 - 新生代 GC(Minor GC):指发生新生代的的垃圾收集动作，Minor GC非常频繁，回收速度一般也比较快。
 - 老年代 GC(Major GC/Full GC):指发生在老年代的GC，出现了 Major GC经常会伴随至少一次的Minor GC(并非绝对)，Major GC的速度一般会比
