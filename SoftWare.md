@@ -37,7 +37,7 @@
 - PostMan
 - Grails
 - Gradle
-- 
+- Groovy
 
 ### Python 开发
 - Python 3.x
