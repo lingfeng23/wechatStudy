@@ -2,7 +2,6 @@ package com.malf.service.impl;
 
 import com.malf.annotation.Master;
 import com.malf.entity.Member;
-import com.malf.entity.MemberExample;
 import com.malf.mapper.MemberMapper;
 import com.malf.service.MemberService;
 import org.springframework.beans.factory.annotation.Autowired;
