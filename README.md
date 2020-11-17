@@ -393,7 +393,6 @@ data 域保存了完整的数据记录。这个索引的 key 是数据表的主�
 
 ##### B-Tree 索引和哈希索引的区别(TODO)
 
-
 ##### Mysql 常用SQL语句
 - show index from xxx[tableName]; // 查询某张表中所有索引
 
