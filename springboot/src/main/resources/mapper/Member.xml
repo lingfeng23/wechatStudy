@@ -1,0 +1,12 @@
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.malf.mapper.MemberMapper" >
+	<insert id="insert">
+		INSERT INTO member(name)
+		VALUES (#{name, jdbcType=VARCHAR})
+	</insert>
+
+	<select id="selectAll" resultType="com.malf.entity.Member">
+		SELECT *
+		FROM member
+	</select>
+</mapper>
