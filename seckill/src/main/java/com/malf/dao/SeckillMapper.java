@@ -4,7 +4,7 @@ import com.malf.entity.Seckill;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -22,7 +22,7 @@ public interface SeckillMapper {
 	 * @param killTime  秒杀的精确时间
 	 * @return 如果秒杀成功就返回1, 否则就返回0
 	 */
-	int reduceNumber(@Param("seckillId") long seckillId, @Param("killTime") LocalDateTime killTime);
+	int reduceNumber(@Param("seckillId") long seckillId, @Param("killTime") Date killTime);
 
 	/**
 	 * 根据 seckillId 查询秒杀商品的详情。

@@ -1,6 +1,6 @@
 package com.malf.dto;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @author malf
@@ -16,11 +16,11 @@ public class Exposer {
 	/* id为seckillId的商品秒杀地址   */
 	private long seckillId;
 	/* 系统当前的时间   */
-	private LocalDateTime now;
+	private Date now;
 	/* 秒杀开启的时间   */
-	private LocalDateTime start;
+	private Date start;
 	/*  秒杀结束的时间  */
-	private LocalDateTime end;
+	private Date end;
 
 	public Exposer(boolean exposed, String md5, long seckillId) {
 		this.exposed = exposed;
@@ -28,7 +28,7 @@ public class Exposer {
 		this.seckillId = seckillId;
 	}
 
-	public Exposer(boolean exposed, long seckillId, LocalDateTime now, LocalDateTime start, LocalDateTime end) {
+	public Exposer(boolean exposed, long seckillId, Date now, Date start, Date end) {
 		this.exposed = exposed;
 		this.seckillId = seckillId;
 		this.now = now;
@@ -65,27 +65,27 @@ public class Exposer {
 		this.seckillId = seckillId;
 	}
 
-	public LocalDateTime getNow() {
+	public Date getNow() {
 		return now;
 	}
 
-	public void setNow(LocalDateTime now) {
+	public void setNow(Date now) {
 		this.now = now;
 	}
 
-	public LocalDateTime getStart() {
+	public Date getStart() {
 		return start;
 	}
 
-	public void setStart(LocalDateTime start) {
+	public void setStart(Date start) {
 		this.start = start;
 	}
 
-	public LocalDateTime getEnd() {
+	public Date getEnd() {
 		return end;
 	}
 
-	public void setEnd(LocalDateTime end) {
+	public void setEnd(Date end) {
 		this.end = end;
 	}
 

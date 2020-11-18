@@ -1,7 +1,7 @@
 package com.malf.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @author malf
@@ -18,7 +18,7 @@ public class SuccessKilled implements Serializable {
 	/* 秒杀状态 */
 	private short state;
 	/* 创建时间 */
-	private LocalDateTime createTime;
+	private Date createTime;
 	/* 秒杀商品信息 */
 	private Seckill seckill;
 
@@ -46,11 +46,11 @@ public class SuccessKilled implements Serializable {
 		this.state = state;
 	}
 
-	public LocalDateTime getCreateTime() {
+	public Date getCreateTime() {
 		return createTime;
 	}
 
-	public void setCreateTime(LocalDateTime createTime) {
+	public void setCreateTime(Date createTime) {
 		this.createTime = createTime;
 	}
 

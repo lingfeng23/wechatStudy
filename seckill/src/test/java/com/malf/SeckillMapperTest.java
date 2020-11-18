@@ -8,7 +8,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -26,10 +26,10 @@ public class SeckillMapperTest {
 	@Test
 	public void reduceNumber() throws Exception {
 		long seckillId = 1000;
-		LocalDateTime localDateTime = LocalDateTime.now();
+		Date date = new Date();
 		System.out.println(seckillMapper);
-		System.out.println(localDateTime);
-		int i = seckillMapper.reduceNumber(seckillId, localDateTime);
+		System.out.println(date);
+		int i = seckillMapper.reduceNumber(seckillId, date);
 		System.out.println(i);
 	}
 

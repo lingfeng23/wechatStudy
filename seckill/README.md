@@ -30,7 +30,7 @@
 ```
 ### 导入到IDE  
 这里因为是使用`IDEA`创建的项目,所以使用`IDEA`直接打开是很方便的,提前是你要配置好`maven`的相关配置,以及项目`JDK`版本,
-`JDK`版本必须在`1.8`以上,因为在项目中使用了`Java8`的`LocalDateTime`以及`LocalDate`,所以低于这个版本编译会失败的
+`JDK`版本建议在`1.8`以上,
   - IDEA  
   直接在主界面选择`Open`,然后找到项目所在路径,点击`pom.xml`打开就可以了
   - Eclipse
@@ -323,7 +323,7 @@ select @@version;
 package com.suny.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 
 public class SuccessKilled implements Serializable {
@@ -335,14 +335,14 @@ public class SuccessKilled implements Serializable {
     /* 秒杀的状态*/
     private short state;
     /* 创建时间*/
-    private LocalDateTime createTime;
+    private Date createTime;
     /* 多对一,因为一件商品在库存中肯定有许多,对应的购买信息也有很多*/
     private Seckill seckill;
 
     public SuccessKilled() {
     }
 
-    public SuccessKilled(long seckillId, long userPhone, short state, LocalDateTime createTime, Seckill seckill) {
+    public SuccessKilled(long seckillId, long userPhone, short state, Date createTime, Seckill seckill) {
         this.seckillId = seckillId;
         this.userPhone = userPhone;
         this.state = state;
@@ -374,11 +374,11 @@ public class SuccessKilled implements Serializable {
         this.state = state;
     }
 
-    public LocalDateTime getCreateTime() {
+    public Date getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(LocalDateTime createTime) {
+    public void setCreateTime(Date createTime) {
         this.createTime = createTime;
     }
 
@@ -409,7 +409,7 @@ public class SuccessKilled implements Serializable {
 package com.suny.entity;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 public class Seckill implements Serializable {
 
@@ -421,16 +421,16 @@ public class Seckill implements Serializable {
     /* 秒杀的商品编号 */
     private int number;
     /* 开始秒杀的时间 */
-    private LocalDateTime startTime;
+    private Date startTime;
     /* 结束秒杀的时间 */
-    private LocalDateTime endTime;
+    private Date endTime;
     /* 创建的时间 */
-    private LocalDateTime createTIme;
+    private Date createTIme;
 
     public Seckill() {
     }
 
-    public Seckill(long seckillId, String name, int number, LocalDateTime startTime, LocalDateTime endTime, LocalDateTime createTIme) {
+    public Seckill(long seckillId, String name, int number, Date startTime, Date endTime, Date createTIme) {
         this.seckillId = seckillId;
         this.name = name;
         this.number = number;
@@ -463,27 +463,27 @@ public class Seckill implements Serializable {
         this.number = number;
     }
 
-    public LocalDateTime getStartTime() {
+    public Date getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(Date startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public Date getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
 
-    public LocalDateTime getCreateTIme() {
+    public Date getCreateTIme() {
         return createTIme;
     }
 
-    public void setCreateTIme(LocalDateTime createTIme) {
+    public void setCreateTIme(Date createTIme) {
         this.createTIme = createTIme;
     }
 
@@ -510,7 +510,7 @@ package com.suny.dao;
 import com.suny.entity.Seckill;
 import org.apache.ibatis.annotations.Param;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 public interface SeckillMapper {
@@ -521,7 +521,7 @@ public interface SeckillMapper {
      * @param killTime  秒杀的精确时间
      * @return 如果秒杀成功就返回1,否则就返回0
      */
-    int reduceNumber(@Param("seckillId") long seckillId, @Param("killTime") LocalDateTime killTime);
+    int reduceNumber(@Param("seckillId") long seckillId, @Param("killTime") Date killTime);
 
     /**
      * 根据传过来的<code>seckillId</code>去查询秒杀商品的详情.
@@ -739,7 +739,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import javax.annotation.Resource;
 
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -754,7 +754,7 @@ public class SeckillMapperTest {
     @Test
     public void reduceNumber() throws Exception {
         long seckillId=1000;
-        LocalDateTime localDateTime=LocalDateTime.now();
+        Date localDateTime=Date.now();
         int i = seckillMapper.reduceNumber(seckillId, localDateTime);
         System.out.println(i);
     }
@@ -844,11 +844,11 @@ public class Exposer {
     /* id为seckillId的商品秒杀地址   */
     private long seckillId;
     /* 系统当前的时间   */
-    private LocalDateTime now;
+    private Date now;
     /* 秒杀开启的时间   */
-    private LocalDateTime start;
+    private Date start;
     /*  秒杀结束的时间  */
-    private LocalDateTime end;
+    private Date end;
 
     public Exposer() {
     }
@@ -859,7 +859,7 @@ public class Exposer {
         this.seckillId = seckillId;
     }
 
-    public Exposer(boolean exposed, long seckillId, LocalDateTime now, LocalDateTime start, LocalDateTime end) {
+    public Exposer(boolean exposed, long seckillId, Date now, Date start, Date end) {
         this.exposed = exposed;
         this.seckillId = seckillId;
         this.now = now;
@@ -896,27 +896,27 @@ public class Exposer {
         this.seckillId = seckillId;
     }
 
-    public LocalDateTime getNow() {
+    public Date getNow() {
         return now;
     }
 
-    public void setNow(LocalDateTime now) {
+    public void setNow(Date now) {
         this.now = now;
     }
 
-    public LocalDateTime getStart() {
+    public Date getStart() {
         return start;
     }
 
-    public void setStart(LocalDateTime start) {
+    public void setStart(Date start) {
         this.start = start;
     }
 
-    public LocalDateTime getEnd() {
+    public Date getEnd() {
         return end;
     }
 
-    public void setEnd(LocalDateTime end) {
+    public void setEnd(Date end) {
         this.end = end;
     }
 
@@ -1119,9 +1119,9 @@ public class SeckillServiceImpl implements SeckillService {
         }
 
         // 判断是否还没到秒杀时间或者是过了秒杀时间
-        LocalDateTime startTime = seckill.getStartTime();
-        LocalDateTime endTime = seckill.getEndTime();
-        LocalDateTime nowTime = LocalDateTime.now();
+        Date startTime = seckill.getStartTime();
+        Date endTime = seckill.getEndTime();
+        Date nowTime = Date.now();
         //   开始时间大于现在的时候说明没有开始秒杀活动    秒杀活动结束时间小于现在的时间说明秒杀已经结束了
        /* if (!nowTime.isAfter(startTime)) {
             logger.info("现在的时间不在开始时间后面,未开启秒杀");
@@ -1161,7 +1161,7 @@ public class SeckillServiceImpl implements SeckillService {
             throw new SeckillException("seckill data rewrite");
         }
         // 执行秒杀业务逻辑
-        LocalDateTime nowTIme = LocalDateTime.now();
+        Date nowTIme = Date.now();
 
         try {
             //执行减库存操作
@@ -1536,8 +1536,8 @@ public class SeckillController {
      */
     @RequestMapping(value = "/time/now", method = RequestMethod.GET)
     @ResponseBody
-    public SeckillResult<LocalDateTime> time() {
-        LocalDateTime localDateTime = LocalDateTime.now();
+    public SeckillResult<Date> time() {
+        Date localDateTime = Date.now();
         return new SeckillResult<>(true, localDateTime);
     }
 
@@ -1795,7 +1795,7 @@ public class SeckillResult<T> {
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%--        这里是定义页面使用标签中的属性设置,<tags:localDataTime dateTime="${sk.createTIme}"/>     --%>
-<%@ attribute name="dateTime" required="true" type="java.time.LocalDateTime" %>
+<%@ attribute name="dateTime" required="true" type="java.time.Date" %>
 <%@ attribute name="pattern" required="false" type="java.lang.String" %>
 <%--首选判断日期时间转换规则是否存在,不存在给出默认的规则--%>
 <c:if test="${empty pattern}">
@@ -2231,9 +2231,9 @@ public class RedisDao {
         }
 
         // 判断是否还没到秒杀时间或者是过了秒杀时间
-        LocalDateTime startTime = seckill.getStartTime();
-        LocalDateTime endTime = seckill.getEndTime();
-        LocalDateTime nowTime = LocalDateTime.now();
+        Date startTime = seckill.getStartTime();
+        Date endTime = seckill.getEndTime();
+        Date nowTime = Date.now();
         //   开始时间大于现在的时候说明没有开始秒杀活动    秒杀活动结束时间小于现在的时间说明秒杀已经结束了
         if (nowTime.isAfter(startTime) && nowTime.isBefore(endTime)) {
             //秒杀开启,返回秒杀商品的id,用给接口加密的md5
@@ -2349,7 +2349,7 @@ SELECT @r_result;
         if (md5 == null || !md5.equals(getMd5(seckillId))) {
             return new SeckillExecution(seckillId, SeckillStatEnum.DATE_REWRITE);
         }
-        LocalDateTime killTime = LocalDateTime.now();
+        Date killTime = Date.now();
         Map<String, Object> map = new HashMap<>();
         map.put("seckillId", seckillId);
         map.put("phone", userPhone);
@@ -2383,7 +2383,7 @@ SELECT @r_result;
             throw new SeckillException("seckill data rewrite");
         }
         // 执行秒杀业务逻辑
-        LocalDateTime nowTIme = LocalDateTime.now();
+        Date nowTIme = Date.now();
 
         try {
             // 记录购买行为
