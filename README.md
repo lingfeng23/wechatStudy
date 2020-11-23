@@ -7,7 +7,7 @@
 ##### 接口和抽象类的区别是什么？
 - 接口的方法默认是 public，所有方法在接口中不能有实现(Java 8 开始接口方法可以有默认实现)，而抽象类可以有非抽象的方法。
 - 接口中除了 static、final 变量，不能有其他变量，而抽象类中则不一定。
-- 一个类可以实现多个接口，但只能实现一个抽象类。接口自己本身可以通过 extends 关键字扩展多个接口。
+- 一个类可以实现多个接口，但只能继承一个抽象类。接口自己本身可以通过 extends 关键字扩展多个接口。
 - 接口方法默认修饰符是 public，抽象方法可以有 public、protected 和 default 这些修饰符(抽象方法就是为了被重写所以不能使用 private 关键字修饰！)。
 - 从设计层面来说，抽象是对类的抽象，是一种模板设计，而接口是对行为的抽象，是一种行为的规范。
 
@@ -42,6 +42,18 @@ I/O 来提升开发速率和更好的维护性；对于高负载、高并发的(
     serialVersionUID 进行比较, 如果相同则反序列化成功, 否则报错.
     - 显式指定 serialVersionUID 后就解决了序列化与反序列化产生的 serialVersionUID 不一致的问题。
     
+##### 如何实现对象克隆
+- 实现 Cloneable 接口并重写 Object 类中的 clone() 方法
+- 实现 Serializable 接口，通过对象的序列化和反序列化实现克隆。
+
+##### 常见的运行时异常
+- ArithmeticException（算术异常）
+- ClassCastException （类转换异常）
+- IllegalArgumentException （非法参数异常）
+- IndexOutOfBoundsException （下标越界异常）
+- NullPointerException （空指针异常）
+- SecurityException （安全异常）
+
 #### JVM
 
 ##### Java 对象的创建过程
@@ -60,13 +72,13 @@ GC 分代年龄等信息。 这些信息存放在对象头中。 另外，根据
 
 ##### 对类加载器的了解?
 JVM 中内置了三个重要的 ClassLoader，除了 BootstrapClassLoader 其他类加载器均由 Java 实现且全部继承自java.lang.ClassLoader: 
-- BootstrapClassLoader(启动类加载器) : 最顶层的加载类，由C++实现，负责加载 %JAVA_HOME%/lib目录下的jar包和类或者或被 -Xbootclasspath
+- BootstrapClassLoader(启动类加载器): 最顶层的加载类，由C++实现，负责加载 %JAVA_HOME%/lib目录下的jar包和类或者或被 -Xbootclasspath
 参数指定的路径中的所有类。
-- ExtensionClassLoader(扩展类加载器) : 主要负责加载目录 %JRE_HOME%/lib/ext 目录下的jar包和类，或被 java.ext.dirs 系统变量所指定的路径下的jar包。
-- AppClassLoader(应用程序类加载器) :面向我们用户的加载器，负责加载当前应用classpath下的所有jar包和类。
+- ExtensionClassLoader(扩展类加载器): 主要负责加载目录 %JRE_HOME%/lib/ext 目录下的jar包和类，或被 java.ext.dirs 系统变量所指定的路径下的jar包。
+- AppClassLoader(应用程序类加载器): 面向我们用户的加载器，负责加载当前应用classpath下的所有jar包和类。
 
 ##### 双亲委派模型介绍
-每一个类都有一个对应它的类加载器。系统中的 ClassLoder 在协同工作的时候会默认使用 双亲委派模型 。即在类加载的时候，系统会首先判断当前类是否被加载过。
+每一个类都有一个对应它的类加载器。系统中的 ClassLoader 在协同工作的时候会默认使用"双亲委派模型"。即在类加载的时候，系统会首先判断当前类是否被加载过。
 已经被加载的类会直接返回，否则才会尝试加载。加载的时候，首先会把该请求委派该父类加载器的 loadClass() 处理，因此所有的请求最终都应该传送到顶层的
 启动类加载器 BootstrapClassLoader 中。当父类加载器无法处理时，才由自己来处理。当父类加载器为null时，会使用启动类加载器 BootstrapClassLoader
 作为父类加载器。
@@ -95,25 +107,25 @@ Hashtable 没有这样的机制。
 
 ##### ConcurrentHashMap 和 Hashtable 的区别
 ConcurrentHashMap 和 Hashtable 的区别主要体现在实现线程安全的方式上不同。
-- 底层数据结构: JDK1.7的 ConcurrentHashMap 底层采用 分段的数组+链表 实现，JDK1.8 采用的数据结构跟HashMap1.8的结构一样，数组+链表/红黑
-二叉树。Hashtable 和 JDK1.8 之前的 HashMap 的底层数据结构类似都是采用 数组+链表 的形式，数组是 HashMap 的主体，链表则是主要为了解决哈希冲突而存在的；
+- 底层数据结构: JDK1.7的 ConcurrentHashMap 底层采用"分段的数组+链表"实现，JDK1.8 采用的数据结构跟HashMap1.8的结构一样，数组+链表/红黑
+二叉树。Hashtable 和 JDK1.8 之前的 HashMap 的底层数据结构类似都是采用"数组+链表"的形式，数组是 HashMap 的主体，链表则是主要为了解决哈希冲突而存在的；
 - 实现线程安全的方式(重要):    
-    - 在 JDK1.7 的时候，ConcurrentHashMap(分段锁) 对整个桶数组进行了分割分段(Segment)，每一把锁只锁容器其中一部分数据，多线程访问容器里不
-    同数据段的数据，就不会存在锁竞争，提高并发访问率。 到了 JDK1.8 的时候已经摒弃了Segment的概念，而是直接用 Node 数组+链表+红黑树的数据结构
-    来实现，并发控制使用 synchronized 和 CAS 来操作。(JDK1.6以后 对 synchronized锁做了很多优化) 整个看起来就像是优化过且线程安全的
+    - 在 JDK1.7 的时候，ConcurrentHashMap(分段锁)对整个桶数组进行了分割分段(Segment)，每一把锁只锁容器其中一部分数据，多线程访问容器里不
+    同数据段的数据，就不会存在锁竞争，提高并发访问率。到了 JDK1.8 的时候已经摒弃了 Segment 的概念，而是直接用"Node 数组+链表+红黑树"的数据结构
+    来实现，并发控制使用 synchronized 和 CAS 来操作。(JDK1.6以后对 synchronized 锁做了很多优化) 整个看起来就像是优化过且线程安全的
     HashMap，虽然在 JDK1.8中还能看到 Segment 的数据结构，但是已经简化了属性，只是为了兼容旧版本；
-    - Hashtable(同一把锁) :使用 synchronized 来保证线程安全，效率非常低下。当一个线程访问同步方法时，其他线程也访问同步方法，可能会进入阻塞
+    - Hashtable(同一把锁): 使用 synchronized 来保证线程安全，效率非常低下。当一个线程访问同步方法时，其他线程也访问同步方法，可能会进入阻塞
     或轮询状态，如使用 put 添加元素，另一个线程不能使用 put 添加元素，也不能使用 get，竞争会越来越激烈效率越低。
 
 ##### Arraylist 和 LinkedList 的区别
 - 是否保证线程安全: ArrayList 和 LinkedList 都是不同步的，也就是不保证线程安全；
-- 底层数据结构: Arraylist 底层使用的是 Object 数组；LinkedList 底层使用的是 双向链表 数据结构(JDK1.6之前为循环链表，JDK1.7取消了循环。
+- 底层数据结构: Arraylist 底层使用的是"Object 数组"；LinkedList 底层使用的是"双向链表"数据结构(JDK1.6之前为循环链表，JDK1.7取消了循环。
 - 插入和删除是否受元素位置的影响: 
-    - ArrayList 采用数组存储，所以插入和删除元素的时间复杂度受元素位置的影响。 比如: 执行add(E e) 方法的时候， ArrayList 会默认在将指定的
+    - ArrayList 采用数组存储，所以插入和删除元素的时间复杂度受元素位置的影响。比如: 执行add(E e) 方法的时候， ArrayList 会默认在将指定的
     元素追加到此列表的末尾，这种情况时间复杂度就是O(1)。但是如果要在指定位置 i 插入和删除元素的话(add(int index, E element) )时间复杂度
-    就为 O(n-i)。因为在进行上述操作的时候集合中第 i 和第 i 个元素之后的(n-i)个元素都要执行向后位/向前移一位的操作。 
-    - LinkedList 采用链表存储，所以对于add(E e)方法的插入，删除元素时间复杂度不受元素位置的影响，近似 O(1)，如果是要在指定位置i插入和删
-    除元素的话((add(int index, E element)) 时间复杂度近似为o(n))因为需要先移动到指定位置再插入。
+    就为 O(n-i)。因为在进行上述操作的时候集合中第 i 和第 i 个元素之后的(n-i)个元素都要执行向后/向前移一位的操作。 
+    - LinkedList 采用链表存储，所以对于add(E e)方法的插入，删除元素时间复杂度不受元素位置的影响，近似 O(1)，如果是要在指定位置 i 插入和删
+    除元素的话((add(int index, E element)) 时间复杂度近似为o(n))，因为需要先移动到指定位置再插入。
 - 是否支持快速随机访问: LinkedList 不支持高效的随机元素访问，而 ArrayList 支持。快速随机访问就是通过元素的序号快速获取元素对象(对应于get(int index) 方法)。
 - 内存空间占用: ArrayList 的空间浪费主要体现在在 list 列表的结尾会预留一定的容量空间，而 LinkedList 的空间花费则体现在它的每一个元素都需要
 消耗比 ArrayList 更多的空间(因为要存放直接后继和直接前驱以及数据)。
