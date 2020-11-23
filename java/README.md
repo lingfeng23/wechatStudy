@@ -3,6 +3,10 @@
 - SerializableTest 序列化与反序列化
 - AutoUnboxingTest 自动拆箱装箱
 - CloneTest 通过 Serializable 实现对象的深度克隆
+- PatternTest 正则表达式示例
+    - Java 中的 String 类提供了支持正则表达式操作的方法，包括：matches()、replaceAll()、replaceFirst()、split()。
+    - Java 中可以用 Pattern 类表示正则表达式对象，它提供了丰富的 API 进行各种正则表达式操作
+
 
 ### Java 集合(collections)
 - UniqueList List去除重复数据的五种方式
@@ -17,4 +21,5 @@
 - Dicing 模拟掷骰子
 - PairKeyExample 非对称加密示例
 
-###
+### 测试/调试(test)
+- DebugTest IDEA 中的调试示例
