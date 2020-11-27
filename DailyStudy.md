@@ -694,3 +694,55 @@ console 对象，用于向标准输出流( stdout )或标准错误流( stderr )�
 |同步磁盘缓存|fs.fsync(fd, [callback(err)])|fs.fsyncSync(fd)|
 
 ### HTTP服务器与客户端
+
+## 笔记本安装软件
+
+### 装机必备
+- 电脑管家
+- 搜狗输入法
+- Chrome
+- 百度网盘
+- 微信
+- 爱奇艺
+- 网易云音乐
+
+### 日常办公
+- 极速PDF阅读器
+- WPS Office
+- 网易邮箱大师
+- 网易有道词典
+- Notepad++
+- WinRAR/Bandizip
+- IIS7 服务器管理器
+- 向日葵(远程桌面)
+- 腾讯桌面整理
+- 钉钉
+- VMware Workstation
+
+### 数据库软件
+- Navicat
+- Mysql
+- Redis
+- RedisDesktopManager
+
+### Java 开发
+- JDK 1.8
+- Intellij IDEA
+- Tomcat
+- SourceTree
+- Git
+- PostMan
+- Grails
+- Gradle
+- Groovy
+
+### Python 开发
+- Python 3.x
+- PyCharm
+
+### 前端相关
+- WebStorm
+- VSCode
+- nodejs
+
+### 
